@@ -12,8 +12,12 @@ class Keypad
     @message = args.fetch(:message).split('')
   end
 
+  def module_base
+    1000000007
+  end
+
   def result
-    total.count
+    total.count % module_base
   end
 
   def number
