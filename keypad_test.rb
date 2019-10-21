@@ -22,6 +22,13 @@ class KeypadTest < Test::Unit::TestCase
     message = 'LEARN IT'
     keys = ["LAP","RHO","IVQW","SKJ","TZU","MDX","NGYC","BEF"]
     comb = Keypad.new(config: keys, message: message)
-    assert_equal 4, comb.total.count
+    assert_equal 4, comb.result
+  end
+
+  def test_carlos
+    message = 'CARLOS ANDRES'
+    keys = ["LAP","RHO","IVQW","SKJ","TZU","MDX","NGYC","BEF"]
+    comb = Keypad.new(config: keys, message: message)
+    assert_equal 3136, comb.result
   end
 end
