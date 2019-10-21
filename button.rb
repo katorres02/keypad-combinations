@@ -10,6 +10,6 @@ class Button
   end
 
   def repetitions(index)
-    number.to_s * (index + 1)
+    [number.to_s] * (index + 1)
   end
 end

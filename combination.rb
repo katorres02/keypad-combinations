@@ -1,7 +1,7 @@
 module Combination
   def total
     r = []
-    number.split('').each_with_index do |b, i|
+    number.each_with_index do |b, i|
       if !r.empty? && (r.last[:number] == number[i])
          r.last[:count] = r.last[:count] + 1
       else

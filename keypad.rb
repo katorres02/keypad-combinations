@@ -35,7 +35,7 @@ class Keypad
   private
 
   def generate_number
-    data.sort_by { |x| x[:sort] }.map { |b| b[:button].repetitions(b[:position]) }.join
+    data.sort_by { |x| x[:sort] }.map { |b| b[:button].repetitions(b[:position]) }.flatten
   end
 
   def data
