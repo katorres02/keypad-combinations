@@ -1,55 +1,57 @@
 require 'pry'
-
-class Button
-  attr_reader :content, :number
-  def initialize(args)
-    @content = args.fetch(:content).split('')
-    @number  = args.fetch(:number)
-  end
-
-  def contain?(message)
-    content.any? { |x| message.include? x }
-  end
-end
+require_relative 'button'
+require_relative 'combination'
 
 class Keypad
-  attr_reader :message, :buttons, :data
+  attr_reader :message, :buttons, :data, :number, :config
+  include Combination
+
   def initialize(args)
+    @config  = args.fetch(:config)
+    @data    = []
     @message = args.fetch(:message).split('')
-    @buttons = []
-    @data = []
-    add_buttons(args.fetch(:arr))
   end
 
-  def keys_pressed
-    buttons.each_with_index { |b, i| data << structure(i, b) if b.contain?(message) }
+  def result
+    total.count
+  end
+
+  def number
+    @number ||= generate_number
+  end
+
+  def buttons
+    index = 0
+    @buttons ||= config.collect do |content|
+      index+=1
+      Button.new(content: content, number: index)
+    end.insert(0, Button.new(content: ' ', number: 0))
+  end
+
+  private
+
+  def generate_number
+    data.sort_by { |x| x[:sort] }.map { |b| b[:button].repetitions(b[:position]) }.join
+  end
+
+  def data
+    return @data unless @data.empty?
+    buttons.each_with_index { |b, i| @data << structure(i, b) if b.contain?(message) }
+    @data.flatten!
   end
   
   def structure(index, button)
     message.map do |c|
       if pos = button.content.index(c)
-        basic_object(button: index, char: c, pos: pos, sort: message.index(c))
+        press_info(button: button, char: c, pos: pos, sort: message.index(c))
       end
-    end
+    end.compact
   end
 
-  def basic_object(args)
+  def press_info(args)
     {
-      button: args[:button], char: args[:char], index: args[:pos], sort: args[:sort],
-      combinations: []
+      button: args[:button], char: args[:char], position: args[:pos], sort: args[:sort]
     }
-  end
-
-  private
-
-  def add_buttons(buttons)
-    buttons.insert(0, ' ')
-    buttons.each_with_index do |content, index|
-      @buttons << Button.new(content: content, number: index + 1)
-    end
   end
 end
 
-k= Keypad.new(arr: ["vbn", "xci", "dsf", "olk"], message: "si")
-k.buttons
-binding.pry
